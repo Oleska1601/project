@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Операции с деньгами</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>Операции с деньгами</h1>
+<form id="operationForm" method="post">
+    <label for="numberInput">Сумма:</label>
+    <input type="number" id="numberInput" name="amount" required>
+    <br>
+
+    <label for="commentInput">Комментарий:</label>
+    <input type="text" id="commentInput" name="comment">
+    <br>
+
+    <button type="submit" id="topupButton">Пополнить</button>
+    <button type="submit" id="deductButton">Списать</button>
+    <div id="dataField">Текущая сумма {{.Account}}</div>
+    <h1>Последние 10 операций</h1>
+    <ul>
+        {{range $key, $value := .Operations }}
+            <li>
+                <h2>Операция: {{ $value.ID }}</h2>
+                <p>:Сумма операции: {{ $value.Amount }}</p>
+                <p>:Тип операции: {{ $value.Type }}</p>
+                <p>:Комментарий к операции: {{ $value.Comment }}</p>
+                <p>:Дата совершения операции: {{ $value.Date }}</p>
+            </li>
+        {{end}}
+    </ul>
+
+</form>
+<script src="script.js"></script>
+</body>
+</html>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    h1 {
+        color: #333;
+    }
+
+    label {
+        display: block;
+        margin: 10px 0 5px;
+    }
+
+    input[type="number"],
+    input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        margin-right: 5px;
+    }
+
+    #topupButton {
+        background-color: #4CAF50; /* Зеленый */
+    }
+
+    #deductButton {
+        background-color: #f44336; /* Красный */
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        margin-top: 0;
+    }
+
+    p {
+        margin: 5px 0;
+    }
+
+    p::before { /* Добавляем двоеточие перед текстом */
+        content: ": ";
+    }
+
+    #dataField {
+        margin-top: 15px;
+        font-weight: bold;
+        font-family: "Arial", sans-serif;
+        font-size: 24px;
+    }
+</style>
+
+<script>
+    document.getElementById('operationForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Предотвращаем стандартное поведение формы
+
+        // Получаем сумму и комментарий
+        const amount = document.getElementById('numberInput').value;
+        const comment = document.getElementById('commentInput').value;
+
+        // Получение текущей даты и времени
+        const now = new Date();
+
+// Форматирование даты и времени в удобочитаемый вид
+        //const formattedDate = now.toISOString(); // формат ISO (например, "2023-10-04T12:34:56.789Z")
+
+        // Определяем тип операции в зависимости от нажатой кнопки
+        const type = event.submitter.id === 'topupButton' ? 'topup' : 'deduct';
+        const url = event.submitter.id === 'topupButton' ? '/topup' : '/deduct';
+
+        // Создаем объект данных
+        const data = {
+            id: Math.floor(Math.random() * 1000), //как-то изменить!!!!!!!!!
+            amount: parseFloat(amount),
+            type: type,
+            comment: comment,
+            date: now,
+        };
+
+        // Отправка данных на сервер
+        try {
+            const response = await fetch(url, { // Замените '/your-endpoint' на ваш URL
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Успешно:', result);
+            } else {
+                console.error('Ошибка при выполнении операции');
+            }
+        } catch (error) {
+            console.error('Ошибка сети:', error);
+        }
+    });
+
+</script>
+
+
+
+
+
