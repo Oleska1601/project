@@ -5,17 +5,18 @@ import (
 	"log/slog"
 	"net/http"
 	"project/config"
+	"project/internal/usecase/repo/sqlitedb"
 	"project/pkg/logger"
 )
 
-// потом сюда еще бд
 type Server struct {
 	Router *mux.Router
+	db     *sqlitedb.SqliteDB
 }
 
-func New(webDir string) *Server {
-	s := &Server{mux.NewRouter()}
+func New(db *sqlitedb.SqliteDB, filename string) *Server {
 
+	s := &Server{mux.NewRouter(), db}
 	s.Router.HandleFunc("/", s.HomeHandler).Methods("POST")
 	s.Router.HandleFunc("/topup", s.topupHandler).Methods("PUT")
 	s.Router.HandleFunc("/deduct", s.deductHandler).Methods("PUT")

@@ -1,13 +1,12 @@
 package usecase
 
-/*
-type Usecase struct {
-	db ...
-}
-
-
-
-func New(db ...) *Usecase {
-	return &Usecase{db: db}
-}
-*/
+//
+//import "project/internal/usecase/repo/sqlitedb"
+//
+//type Usecase struct {
+//	db *sqlitedb.SqliteDB
+//}
+//
+//func New(db *sqlitedb.SqliteDB) *Usecase {
+//	return &Usecase{db: db}
+//}

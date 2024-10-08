@@ -1,16 +1,36 @@
 package usecase
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"project/internal/entity"
+	"project/internal/usecase/repo/sqlitedb"
 )
 
 // сохраняем измененные данные в ипровизированную бд
-func MakeOperation(operation entity.Operation) error {
+func MakeOperation(db *sqlitedb.SqliteDB, operation entity.Operation) error {
 	var val int
-	var responseData entity.ResponseData
+	var account entity.Account
+
+	if operation.Type == "deduct" {
+		val = account.Balance - operation.Amount
+	} else {
+		val = account.Balance + operation.Amount
+	}
+	if val < 0 {
+		return fmt.Errorf("Текущий счёт низкий, операция невозможна")
+	}
+	operation.ID += 1
+
+	if err := db.InsertTableOperations(operation); err != nil {
+		return fmt.Errorf("fail to insert operation in db")
+	}
+	if err := db.UpdateTableAccounts(account); err != nil {
+		return fmt.Errorf("fail to update account in db")
+	}
+	return nil
+}
+
+/*
 	data, err := ioutil.ReadFile("internal/usecase/repo.json")
 	if err != nil {
 		return err
@@ -19,22 +39,13 @@ func MakeOperation(operation entity.Operation) error {
 	if err != nil {
 		return err
 	}
-	if operation.Type == "deduct" {
-		val = responseData.Account - operation.Amount
-	} else {
-		val = responseData.Account + operation.Amount
-	}
-	if val < 0 {
-		return fmt.Errorf("Текущий счёт низкий, операция невозможна")
-	}
-	operation.ID += 1
-	responseData.NumsOfOperations += 1
-	responseData.Operations = append(responseData.Operations, operation)
-	responseData.Account = val
+
+*/
+/*
 	updateData, _ := json.Marshal(responseData)
 	err = ioutil.WriteFile("internal/usecase/repo.json", updateData, 0777)
 	if err != nil {
 		return err
 	}
 	return nil
-}
+*/
