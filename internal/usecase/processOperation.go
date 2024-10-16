@@ -6,7 +6,7 @@ import (
 	"project/internal/usecase/repo/sqlitedb"
 )
 
-// сохраняем измененные данные в ипровизированную бд
+// сохраняем измененные данные в бд
 func MakeOperation(db *sqlitedb.SqliteDB, operation entity.Operation) error {
 	var val int
 	var account entity.Account
@@ -17,7 +17,7 @@ func MakeOperation(db *sqlitedb.SqliteDB, operation entity.Operation) error {
 		val = account.Balance + operation.Amount
 	}
 	if val < 0 {
-		return fmt.Errorf("Текущий счёт низкий, операция невозможна")
+		return fmt.Errorf("current balance is low, operation is impossible")
 	}
 	operation.ID += 1
 
@@ -29,23 +29,3 @@ func MakeOperation(db *sqlitedb.SqliteDB, operation entity.Operation) error {
 	}
 	return nil
 }
-
-/*
-	data, err := ioutil.ReadFile("internal/usecase/repo.json")
-	if err != nil {
-		return err
-	}
-	err = json.Unmarshal(data, &responseData)
-	if err != nil {
-		return err
-	}
-
-*/
-/*
-	updateData, _ := json.Marshal(responseData)
-	err = ioutil.WriteFile("internal/usecase/repo.json", updateData, 0777)
-	if err != nil {
-		return err
-	}
-	return nil
-*/

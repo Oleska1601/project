@@ -7,6 +7,8 @@ type (
 		App  `yaml:"app"`
 		HTTP `yaml:"http"`
 		Log  `yaml:"logger"`
+		Web  `yaml:"web"`
+		DB   `yaml:"db"`
 	}
 
 	App struct {
@@ -20,6 +22,14 @@ type (
 
 	Log struct {
 		Level string `yaml:"log_level"`
+	}
+
+	Web struct {
+		Path string `yaml:"path"`
+	}
+
+	DB struct {
+		Path string `yaml:"path"`
 	}
 )
 

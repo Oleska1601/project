@@ -1,0 +1,141 @@
+basePath: /
+definitions:
+  entity.Account:
+    properties:
+      balance:
+        type: integer
+      id:
+        type: integer
+    type: object
+  entity.Operation:
+    properties:
+      account_id:
+        type: integer
+      amount:
+        type: integer
+      comment:
+        type: string
+      date:
+        type: string
+      id:
+        type: integer
+      type:
+        description: topup or deduct
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample for top up or deduct the balance.
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Project API
+  version: "1.0"
+paths:
+  /:
+    post:
+      consumes:
+      - application/json
+      description: add by json account
+      parameters:
+      - description: Add account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Account'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Account'
+        "400":
+          description: Invalid Operation
+          schema:
+            type: string
+      summary: add account
+      tags:
+      - accounts
+  /deduct:
+    put:
+      consumes:
+      - application/json
+      description: deduct by json operation with type=deduct
+      parameters:
+      - description: Deduct operation
+        in: body
+        name: operation
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Operation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Operation'
+        "400":
+          description: Invalid Operation
+          schema:
+            type: string
+        "500":
+          description: Impossible to make operation
+          schema:
+            type: string
+      summary: Deduct balance
+      tags:
+      - operations
+  /list:
+    get:
+      consumes:
+      - application/json
+      description: get last 10 made operations
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Operation'
+            type: array
+        "400":
+          description: impossible to get last 10 operations
+          schema:
+            type: string
+      summary: Get last 10 made operations
+      tags:
+      - operations
+  /topup:
+    put:
+      consumes:
+      - application/json
+      description: topup by json operation with type=topup
+      parameters:
+      - description: Topup operation
+        in: body
+        name: operation
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Operation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Operation'
+        "400":
+          description: Invalid Operation
+          schema:
+            type: string
+        "500":
+          description: Impossible to make operation
+          schema:
+            type: string
+      summary: Topup balance
+      tags:
+      - operations
+swagger: "2.0"

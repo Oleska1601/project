@@ -2,34 +2,38 @@ package controller
 
 import (
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
+
 	"log/slog"
 	"net/http"
 	"project/config"
-	"project/internal/usecase/repo/sqlitedb"
+	"project/internal/usecase"
 	"project/pkg/logger"
 )
 
 type Server struct {
 	Router *mux.Router
-	db     *sqlitedb.SqliteDB
+	u      *usecase.Usecase
+	log    *logger.Logger
 }
 
-func New(db *sqlitedb.SqliteDB, filename string) *Server {
-
-	s := &Server{mux.NewRouter(), db}
+func New(cfg *config.Config, u *usecase.Usecase, log *logger.Logger) *Server {
+	s := &Server{mux.NewRouter(), u, log}
+	//webDir := cfg.Web.Path
 	s.Router.HandleFunc("/", s.HomeHandler).Methods("POST")
 	s.Router.HandleFunc("/topup", s.topupHandler).Methods("PUT")
 	s.Router.HandleFunc("/deduct", s.deductHandler).Methods("PUT")
 	s.Router.HandleFunc("/list", s.listHandler).Methods("GET")
 
-	//subRouter := s.Router.PathPrefix("/api").Subrouter() //вернет new router
+	s.Router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
+
 	return s
 
 }
 
 func (s *Server) Run(cfg *config.Config) {
-	logger.Logger.Info("Сервер запущен на http://127.0.0.1:" + cfg.Port)
+	s.log.Info("Сервер запущен на http://127.0.0.1:" + cfg.Port)
 	if err := http.ListenAndServe("localhost:"+cfg.Port, s.Router); err != nil {
-		logger.Logger.Error("Fatal Error", slog.Int("status", http.StatusBadGateway))
+		s.log.Error(err, slog.String("msg", "fatal error"), slog.Int("status", http.StatusBadGateway))
 	}
 }

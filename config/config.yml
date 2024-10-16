@@ -6,4 +6,10 @@ http:
   port: '8080'
 
 logger:
-  log_level: 'debug'
+  log_level: 'info'
+
+web:
+  path: '/front'
+
+db:
+  path: 'internal/usecase/repo/sqlitedb/operations.db'

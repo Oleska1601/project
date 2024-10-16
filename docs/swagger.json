@@ -1,0 +1,215 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample for top up or deduct the balance.",
+        "title": "Swagger Project API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/": {
+            "post": {
+                "description": "add by json account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "add account",
+                "parameters": [
+                    {
+                        "description": "Add account",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Account"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Account"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/deduct": {
+            "put": {
+                "description": "deduct by json operation with type=deduct",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "operations"
+                ],
+                "summary": "Deduct balance",
+                "parameters": [
+                    {
+                        "description": "Deduct operation",
+                        "name": "operation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Operation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Operation"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Impossible to make operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/list": {
+            "get": {
+                "description": "get last 10 made operations",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "operations"
+                ],
+                "summary": "Get last 10 made operations",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Operation"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "impossible to get last 10 operations",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/topup": {
+            "put": {
+                "description": "topup by json operation with type=topup",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "operations"
+                ],
+                "summary": "Topup balance",
+                "parameters": [
+                    {
+                        "description": "Topup operation",
+                        "name": "operation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Operation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Operation"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Impossible to make operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.Account": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.Operation": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "amount": {
+                    "type": "integer"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "topup or deduct",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
